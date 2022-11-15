@@ -66,15 +66,15 @@ func main() {
 	store := WatchResources(clientSet, context)
 
 	newDatabase := new(api.Database) // pa == &Student{"", 0}
-	newDatabase.Name = "redis"
+	newDatabase.Name = "mongodb"
 	newDatabase.Kind = "Database" // pa == &Student{"Alice", 0}
 	newDatabase.APIVersion = "resource.donald.com/v1"
-	newDatabase.Spec.DbName = "redis"
-	newDatabase.Spec.Description = "Used for caching data or queuing data."
+	newDatabase.Spec.DbName = "mongodb"
+	newDatabase.Spec.Description = "Used storing unstructured data"
 	newDatabase.Spec.Total = 100
 	newDatabase.Spec.Available = 100
-	newDatabase.Spec.DbType = "caching"
-	newDatabase.Spec.Tags = "Web Development, Caching"
+	newDatabase.Spec.DbType = "noSQL"
+	newDatabase.Spec.Tags = "Web Development, nosql data"
 
 	projectCreated, err := clientSet.Databases(context).Create(newDatabase)
 	if err != nil {
@@ -83,6 +83,13 @@ func main() {
 
 	fmt.Println(projectCreated)
 
+	projectDeleted, err := clientSet.Databases(context).Delete(newDatabase.Name, metav1.GetOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(projectDeleted)
+
 	for {
 		projectsFromStore := store.List()
 		fmt.Printf("project in store: %d\n", len(projectsFromStore))
@@ -90,71 +97,3 @@ func main() {
 		time.Sleep(2 * time.Second)
 	}
 }
-
-// // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
-// type Database struct {
-// 	metav1.TypeMeta   `json:",inline"`
-// 	metav1.ObjectMeta `json:"metadata,omitempty"`
-
-// 	Spec interface{} `json:"spec"`
-// }
-
-// func main() {
-// 	ctx := context.Background()
-// 	var kubeconfig *string
-// 	if home := homedir.HomeDir(); home != "" {
-// 		kubeconfig = flag.String("kubeconfig", filepath.Join(home, ".kube", "vke-2adb84ff-6b5a-4e5e-a92e-0cafa3b13486.yaml"), "(optional) absolute path to the kubeconfig file")
-// 	} else {
-// 		kubeconfig = flag.String("kubeconfig", "", "absolute path to the kubeconfig file")
-// 	}
-// 	flag.Parse()
-
-// 	// use the current context in kubeconfig
-// 	config, err := clientcmd.BuildConfigFromFlags("", *kubeconfig)
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
-
-// 	// create the clientset
-// 	clientSet, err := kubernetes.NewForConfig(config)
-// 	if err != nil {
-// 		panic(err.Error())
-// 	}
-
-// 	projects, err := clientSet.Projects("default").List(metav1.ListOptions{})
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	fmt.Printf("projects found: %+v\n", projects)
-
-// 	store := WatchResources(clientSet)
-
-// 	for {
-// 		projectsFromStore := store.List()
-// 		fmt.Printf("project in store: %d\n", len(projectsFromStore))
-
-// 		time.Sleep(2 * time.Second)
-// 	}
-
-// 	// defaultNamespace, err := clientset.CoreV1().Namespaces().Get(ctx, "default", metav1.GetOptions{})
-// 	// if err != nil {
-// 	// 	panic(err.Error())
-// 	// }
-// 	// // deployments := clientset.AppsV1().Deployments("default")
-// 	// // fmt.Println(deployments)
-// 	// fmt.Println(defaultNamespace.Name)
-
-// 	// watchObject, err := clientset.AppsV1().RESTClient().Get().Resource("/apis/apiextensions.k8s.io/v1/customresourcedefinitions/dbs").Watch(ctx)
-// 	// if err != nil {
-// 	// 	panic(err.Error())
-// 	// }
-// 	// fmt.Println(watchObject)
-// 	// clientset.Resource(gvr).
-// 	// 	Namespace(namespace).Get("foo", metav1.GetOptions{})
-// 	// b, err := clientset.RESTClient().Get().AbsPath("/apis/databases.resource.donald.com/v1/db").DoRaw(ctx)
-// 	// if err != nil {
-// 	// 	panic(err.Error())
-// 	// }
-// 	// fmt.Println(b)
-// }

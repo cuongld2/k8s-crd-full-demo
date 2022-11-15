@@ -15,6 +15,7 @@ type DatabaseInterface interface {
 	Get(name string, options metav1.GetOptions) (*api.Database, error)
 	Create(*api.Database) (*api.Database, error)
 	Watch(opts metav1.ListOptions) (watch.Interface, error)
+	Delete(name string, options metav1.GetOptions) (*api.Database, error)
 	// ...
 }
 
@@ -67,4 +68,17 @@ func (c *databaseClient) Watch(opts metav1.ListOptions) (watch.Interface, error)
 		AbsPath("/apis/resource.donald.com/v1/databases").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch(c.ctx)
+}
+
+func (c *databaseClient) Delete(name string, opts metav1.GetOptions) (*api.Database, error) {
+
+	result := api.Database{}
+
+	err := c.restClient.
+		Delete().
+		AbsPath("/apis/resource.donald.com/v1/databases").
+		Name(name).
+		VersionedParams(&opts, scheme.ParameterCodec).
+		Do(c.ctx).Into(&result)
+	return &result, err
 }
