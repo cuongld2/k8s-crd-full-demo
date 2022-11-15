@@ -27,7 +27,7 @@ import (
 var kubeconfig string
 
 func init() {
-	flag.StringVar(&kubeconfig, "kubeconfig", "/home/donald/.kube/vke-2adb84ff-6b5a-4e5e-a92e-0cafa3b13486.yaml", "path to Kubernetes config file")
+	flag.StringVar(&kubeconfig, "kubeconfig", "/home/donaldle/Projects/Personal/vultr/k8s-crd/k8s-crd-full-demo/vke-2adb84ff-6b5a-4e5e-a92e-0cafa3b13486.yaml", "path to Kubernetes config file")
 	flag.Parse()
 }
 
@@ -56,7 +56,7 @@ func main() {
 
 	context := context.TODO()
 
-	projects, err := clientSet.Databases("default", context).List(metav1.ListOptions{})
+	projects, err := clientSet.Databases(context).List(metav1.ListOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -64,6 +64,24 @@ func main() {
 	fmt.Printf("projects found: %+v\n", projects)
 
 	store := WatchResources(clientSet, context)
+
+	newDatabase := new(api.Database) // pa == &Student{"", 0}
+	newDatabase.Name = "redis"
+	newDatabase.Kind = "Database" // pa == &Student{"Alice", 0}
+	newDatabase.APIVersion = "resource.donald.com/v1"
+	newDatabase.Spec.DbName = "redis"
+	newDatabase.Spec.Description = "Used for caching data or queuing data."
+	newDatabase.Spec.Total = 100
+	newDatabase.Spec.Available = 100
+	newDatabase.Spec.DbType = "caching"
+	newDatabase.Spec.Tags = "Web Development, Caching"
+
+	projectCreated, err := clientSet.Databases(context).Create(newDatabase)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(projectCreated)
 
 	for {
 		projectsFromStore := store.List()

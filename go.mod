@@ -2,7 +2,7 @@ module k8s-resource.com/m
 
 go 1.19
 
-require k8s.io/client-go v0.25.4
+require k8s.io/client-go v0.24.4
 
 require (
 	github.com/google/go-cmp v0.5.9 // indirect
@@ -12,8 +12,8 @@ require (
 )
 
 require (
-	k8s.io/api v0.25.4 // indirect
-	k8s.io/apimachinery v0.25.4
+	k8s.io/api v0.24.4 // indirect
+	k8s.io/apimachinery v0.24.4
 )
 
 require (

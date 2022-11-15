@@ -10,7 +10,7 @@ import (
 )
 
 type ExampleInterface interface {
-	Databases(namespace string, ctx context.Context) DatabaseInterface
+	Databases(ctx context.Context) DatabaseInterface
 }
 
 type ExampleClient struct {
@@ -32,10 +32,9 @@ func NewForConfig(c *rest.Config) (*ExampleClient, error) {
 	return &ExampleClient{restClient: client}, nil
 }
 
-func (c *ExampleClient) Databases(namespace string, ctx context.Context) DatabaseInterface {
+func (c *ExampleClient) Databases(ctx context.Context) DatabaseInterface {
 	return &databaseClient{
 		restClient: c.restClient,
-		ns:         namespace,
 		ctx:        ctx,
 	}
 }

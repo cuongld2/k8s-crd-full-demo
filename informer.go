@@ -17,10 +17,10 @@ func WatchResources(clientSet client.ExampleInterface, context context.Context) 
 	projectStore, projectController := cache.NewInformer(
 		&cache.ListWatch{
 			ListFunc: func(lo metav1.ListOptions) (result runtime.Object, err error) {
-				return clientSet.Databases("default", context).List(lo)
+				return clientSet.Databases(context).List(lo)
 			},
 			WatchFunc: func(lo metav1.ListOptions) (watch.Interface, error) {
-				return clientSet.Databases("default", context).Watch(lo)
+				return clientSet.Databases(context).Watch(lo)
 			},
 		},
 		&api.Database{},

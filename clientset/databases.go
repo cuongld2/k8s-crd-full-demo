@@ -28,9 +28,7 @@ func (c *databaseClient) List(opts metav1.ListOptions) (*api.DatabaseList, error
 	result := api.DatabaseList{}
 	err := c.restClient.
 		Get().
-		Namespace(c.ns).
-		Resource("databases").
-		VersionedParams(&opts, scheme.ParameterCodec).
+		AbsPath("/apis/resource.donald.com/v1/databases").
 		Do(c.ctx).
 		Into(&result)
 
@@ -41,8 +39,7 @@ func (c *databaseClient) Get(name string, opts metav1.GetOptions) (*api.Database
 	result := api.Database{}
 	err := c.restClient.
 		Get().
-		Namespace(c.ns).
-		Resource("databases").
+		AbsPath("/apis/resource.donald.com/v1/databases").
 		Name(name).
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Do(c.ctx).
@@ -55,8 +52,7 @@ func (c *databaseClient) Create(database *api.Database) (*api.Database, error) {
 	result := api.Database{}
 	err := c.restClient.
 		Post().
-		Namespace(c.ns).
-		Resource("databases").
+		AbsPath("/apis/resource.donald.com/v1/databases").
 		Body(database).
 		Do(c.ctx).
 		Into(&result)
@@ -68,8 +64,7 @@ func (c *databaseClient) Watch(opts metav1.ListOptions) (watch.Interface, error)
 	opts.Watch = true
 	return c.restClient.
 		Get().
-		Namespace(c.ns).
-		Resource("databases").
+		AbsPath("/apis/resource.donald.com/v1/databases").
 		VersionedParams(&opts, scheme.ParameterCodec).
 		Watch(c.ctx)
 }
