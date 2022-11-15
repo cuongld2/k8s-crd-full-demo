@@ -1,0 +1,11 @@
+apiVersion: "resource.donald.com/v1"
+kind: Database
+metadata:
+  name: mysql
+spec:
+  dbName: mysql
+  description: Used for storing relation structured data.
+  total: 50
+  available: 50
+  dbType: sql
+  tags: Web Development, Data Engineering, Embedded software
