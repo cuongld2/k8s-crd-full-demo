@@ -5,7 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"time"
+	"os"
 
 	"k8s-resource.com/m/api"
 	client "k8s-resource.com/m/clientset"
@@ -14,20 +14,16 @@ import (
 
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
-	//
-	// Uncomment to load all auth plugins
-	// _ "k8s.io/client-go/plugin/pkg/client/auth"
-	//
-	// Or uncomment to load specific auth plugins
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/azure"
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
-	// _ "k8s.io/client-go/plugin/pkg/client/auth/oidc"
 )
 
 var kubeconfig string
 
 func init() {
-	flag.StringVar(&kubeconfig, "kubeconfig", "/home/donaldle/Projects/Personal/vultr/k8s-crd/k8s-crd-full-demo/vke-2adb84ff-6b5a-4e5e-a92e-0cafa3b13486.yaml", "path to Kubernetes config file")
+	path, err := os.Getwd()
+	if err != nil {
+		log.Println(err)
+	}
+	flag.StringVar(&kubeconfig, "kubeconfig", path+"/vke.yaml", "path to Kubernetes config file")
 	flag.Parse()
 }
 
@@ -61,39 +57,43 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("projects found: %+v\n", projects)
+	for _, k := range projects.Items {
 
-	store := WatchResources(clientSet, context)
+		fmt.Println(k.Name)
 
-	newDatabase := new(api.Database) // pa == &Student{"", 0}
-	newDatabase.Name = "mongodb"
-	newDatabase.Kind = "Database" // pa == &Student{"Alice", 0}
-	newDatabase.APIVersion = "resource.donald.com/v1"
-	newDatabase.Spec.DbName = "mongodb"
-	newDatabase.Spec.Description = "Used storing unstructured data"
-	newDatabase.Spec.Total = 100
-	newDatabase.Spec.Available = 100
-	newDatabase.Spec.DbType = "noSQL"
-	newDatabase.Spec.Tags = "Web Development, nosql data"
+	}
 
-	projectCreated, err := clientSet.Databases(context).Create(newDatabase)
+	// newDatabase := new(api.Database) // pa == &Student{"", 0}
+	// newDatabase.Name = "mongodb"
+	// newDatabase.Kind = "Database" // pa == &Student{"Alice", 0}
+	// newDatabase.APIVersion = "resource.donald.com/v1"
+	// newDatabase.Spec.DbName = "mongodb"
+	// newDatabase.Spec.Description = "Used storing unstructured data"
+	// newDatabase.Spec.Total = 100
+	// newDatabase.Spec.Available = 50
+	// newDatabase.Spec.DbType = "noSQL"
+	// newDatabase.Spec.Tags = "Web Development, nosql data"
+	// newDatabase.Spec.Available = 70
+
+	// projectCreated, err := clientSet.Databases(context).Create(newDatabase)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// fmt.Println(projectCreated)
+
+	// projectDeleted, err := clientSet.Databases(context).Delete(newDatabase.Name, metav1.DeleteOptions{})
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// fmt.Println(projectDeleted)
+
+	projectGet, err := clientSet.Databases(context).Get("mysql", metav1.GetOptions{})
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Println(projectCreated)
+	fmt.Println(projectGet.Name)
 
-	projectDeleted, err := clientSet.Databases(context).Delete(newDatabase.Name, metav1.GetOptions{})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(projectDeleted)
-
-	for {
-		projectsFromStore := store.List()
-		fmt.Printf("project in store: %d\n", len(projectsFromStore))
-
-		time.Sleep(2 * time.Second)
-	}
 }

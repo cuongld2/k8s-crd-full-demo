@@ -5,7 +5,6 @@ import (
 
 	"k8s-resource.com/m/api"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 )
@@ -14,14 +13,12 @@ type DatabaseInterface interface {
 	List(opts metav1.ListOptions) (*api.DatabaseList, error)
 	Get(name string, options metav1.GetOptions) (*api.Database, error)
 	Create(*api.Database) (*api.Database, error)
-	Watch(opts metav1.ListOptions) (watch.Interface, error)
-	Delete(name string, options metav1.GetOptions) (*api.Database, error)
+	Delete(name string, options metav1.DeleteOptions) (*api.Database, error)
 	// ...
 }
 
 type databaseClient struct {
 	restClient rest.Interface
-	ns         string
 	ctx        context.Context
 }
 
@@ -61,16 +58,7 @@ func (c *databaseClient) Create(database *api.Database) (*api.Database, error) {
 	return &result, err
 }
 
-func (c *databaseClient) Watch(opts metav1.ListOptions) (watch.Interface, error) {
-	opts.Watch = true
-	return c.restClient.
-		Get().
-		AbsPath("/apis/resource.donald.com/v1/databases").
-		VersionedParams(&opts, scheme.ParameterCodec).
-		Watch(c.ctx)
-}
-
-func (c *databaseClient) Delete(name string, opts metav1.GetOptions) (*api.Database, error) {
+func (c *databaseClient) Delete(name string, opts metav1.DeleteOptions) (*api.Database, error) {
 
 	result := api.Database{}
 
