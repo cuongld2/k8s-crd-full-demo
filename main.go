@@ -63,37 +63,4 @@ func main() {
 
 	}
 
-	// newDatabase := new(api.Database) // pa == &Student{"", 0}
-	// newDatabase.Name = "mongodb"
-	// newDatabase.Kind = "Database" // pa == &Student{"Alice", 0}
-	// newDatabase.APIVersion = "resource.donald.com/v1"
-	// newDatabase.Spec.DbName = "mongodb"
-	// newDatabase.Spec.Description = "Used storing unstructured data"
-	// newDatabase.Spec.Total = 100
-	// newDatabase.Spec.Available = 50
-	// newDatabase.Spec.DbType = "noSQL"
-	// newDatabase.Spec.Tags = "Web Development, nosql data"
-	// newDatabase.Spec.Available = 70
-
-	// projectCreated, err := clientSet.Databases(context).Create(newDatabase)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Println(projectCreated)
-
-	// projectDeleted, err := clientSet.Databases(context).Delete(newDatabase.Name, metav1.DeleteOptions{})
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Println(projectDeleted)
-
-	projectGet, err := clientSet.Databases(context).Get("mysql", metav1.GetOptions{})
-	if err != nil {
-		panic(err)
-	}
-
-	fmt.Println(projectGet.Name)
-
 }
